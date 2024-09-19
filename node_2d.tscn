@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7nspoq5a2g2f"]
+
+[ext_resource type="Script" path="res://character_body_2d.gd" id="1_rymmr"]
+[ext_resource type="Texture2D" uid="uid://dvkeq00etpben" path="res://500_500_productGfx_ab749516be262c74b9acb30355eb664b.webp" id="2_ww3bx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7sqry"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+script = ExtResource("1_rymmr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(1.5, 2)
+shape = SubResource("RectangleShape2D_7sqry")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+position = Vector2(4, -0.999985)
+scale = Vector2(0.134, 0.132)
+texture = ExtResource("2_ww3bx")
+
+[node name="RollTimer" type="Timer" parent="CharacterBody2D"]
+wait_time = 0.5
+one_shot = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
