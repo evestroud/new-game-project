@@ -1,51 +1,27 @@
 extends CharacterBody2D
 
-var speed = 150
-var roll_speed = 250
 @onready var rotation_speed = TAU / $RollTimer.wait_time
-var current_velocity = Vector2.ZERO # The player's movement vector.
 
+@export var base_speed = 150
+@export var roll_speed = 250
+@export var roll_direction = Vector2.ZERO
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+func get_input_direction() -> Vector2:
+	return Input.get_vector("Left", "Right", "Up", "Down")
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta) -> void:
 	if $RollTimer.is_stopped():
-		current_velocity = Vector2.ZERO # The player's movement vector.
-		if Input.is_action_pressed("Right"):
-			current_velocity.x += 1
-		if Input.is_action_pressed("Left"):
-			current_velocity.x -= 1
-		if Input.is_action_pressed("Down"):
-			current_velocity.y += 1
-		if Input.is_action_pressed("Up"):
-			current_velocity.y -= 1
-		
-		var mouse_pos = get_viewport().get_mouse_position() * get_viewport_transform()
-		rotation = position.angle_to_point(mouse_pos) + (PI / 2)
+		velocity = get_input_direction() * base_speed
+		look_at(get_global_mouse_position())
 	else:
+		velocity = roll_direction * roll_speed
 		rotate(rotation_speed * delta)
-		
-	if current_velocity.length() > 0:
-		current_velocity = current_velocity.normalized() * (speed if $RollTimer.is_stopped() else roll_speed)
-		move_and_slide()
-		
-	position += current_velocity * delta
-	
+	move_and_slide()
 
-func _input(event):
+func _input(event) -> void:
 	if event.is_action_pressed("Roll") and $RollTimer.is_stopped():
-		current_velocity = Vector2.ZERO # The player's movement vector.
-		if Input.is_action_pressed("Right"):
-			current_velocity.x += 1
-		if Input.is_action_pressed("Left"):
-			current_velocity.x -= 1
-		if Input.is_action_pressed("Down"):
-			current_velocity.y += 1
-		if Input.is_action_pressed("Up"):
-			current_velocity.y -= 1
-		
+		roll_direction = get_input_direction()
 		$RollTimer.start()
+
+func _on_roll_timer_timeout() -> void:
+	roll_direction = Vector2.ZERO
