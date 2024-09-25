@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
-@onready var roll_timer: Timer = $RollTimer
-@onready var rotation_speed: float = TAU / roll_timer.wait_time
+enum RelativeDirection {HOLDING_POSITION, ADVANCING, RETREATING, SIDESTEPPING_CW, SIDESTEPPING_CCW}
 
 @export var base_speed: int = 150
 @export var roll_speed: int = 250
@@ -11,13 +10,13 @@ var roll_direction: Vector2
 var roll_type: RelativeDirection
 var is_jump_roll: bool
 
-enum RelativeDirection {HOLDING_POSITION, ADVANCING, RETREATING, SIDESTEPPING_CW, SIDESTEPPING_CCW}
+@onready var roll_timer: Timer = $RollTimer
+@onready var rotation_speed: float = TAU / roll_timer.wait_time
 
 
 func get_relative_direction(movement_angle: float) -> RelativeDirection:
 	if velocity.is_zero_approx():
 		return RelativeDirection.HOLDING_POSITION
-	# TODO experiment with match statement here?
 	var relative_movement_vector: Vector2 = Vector2.from_angle(rotation - movement_angle)
 	if abs(relative_movement_vector.x) > abs(relative_movement_vector.y):
 		return (
@@ -25,12 +24,11 @@ func get_relative_direction(movement_angle: float) -> RelativeDirection:
 			if relative_movement_vector.x > 0
 			else RelativeDirection.RETREATING
 		)
-	else:
-		return (
-			RelativeDirection.SIDESTEPPING_CW
-			if relative_movement_vector.y > 0
-			else RelativeDirection.SIDESTEPPING_CCW
-		)
+	return (
+		RelativeDirection.SIDESTEPPING_CW
+		if relative_movement_vector.y > 0
+		else RelativeDirection.SIDESTEPPING_CCW
+	)
 
 
 func get_input_direction() -> Vector2:
@@ -47,10 +45,6 @@ func _physics_process(delta: float) -> void:
 		if is_running():
 			velocity *= running_speed_modifier
 		look_at(get_global_mouse_position())
-		var _relative_movement: RelativeDirection = get_relative_direction(velocity.angle())
-		# TODO set movement direction based on relative direction to target
-		# 	- Advance and Retreat are linear directed at target
-		# 	- Try initiation side rolls in a straight line tangent to the target
 	else:
 		velocity = roll_direction * roll_speed
 		if is_jump_roll:
@@ -78,6 +72,7 @@ func _physics_process(delta: float) -> void:
 				rotate(rotation_speed * delta * -1)
 			RelativeDirection.SIDESTEPPING_CW:
 				rotate(rotation_speed * delta)
+	# gdlint:ignore = function-variable-name
 	var _collided: bool = move_and_slide()
 
 
