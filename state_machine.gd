@@ -3,6 +3,8 @@ extends Node
 ## - https://www.gdquest.com/tutorial/godot/design-patterns/finite-state-machine/
 ## - https://godotengine.org/asset-library/asset/2714
 
+signal state_changed(new_state: String)
+
 ## Maps state names to their nodes. Used in _change_state when recieving a
 ## finished signal from the current State.
 var state_map: Dictionary
@@ -29,6 +31,7 @@ func _ready() -> void:
 		if err:
 			printerr(err)
 	current_state = idle  ## Initial Character state is Idle.
+	state_changed.emit(current_state.name)
 
 
 ## Pass inputs not already handled to the current state.
@@ -48,3 +51,4 @@ func _change_state(next_state: String) -> void:
 	current_state.exit()
 	current_state = state_map[next_state]
 	current_state.enter()
+	state_changed.emit(next_state)

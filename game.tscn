@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7nspoq5a2g2f"]
+
+[ext_resource type="PackedScene" uid="uid://b7pfpsbh6vddy" path="res://character.tscn" id="1_s70nu"]
+[ext_resource type="Script" path="res://current_state_label.gd" id="2_1v281"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Character" parent="." instance=ExtResource("1_s70nu")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CurrentStateLabel" type="Label" parent="."]
+offset_left = -15.0
+offset_top = -65.0
+offset_right = 25.0
+offset_bottom = -40.0
+script = ExtResource("2_1v281")
+
+[connection signal="state_changed" from="Character" to="CurrentStateLabel" method="_on_character_state_changed"]

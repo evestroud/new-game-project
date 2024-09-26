@@ -1,0 +1,44 @@
+[gd_scene load_steps=8 format=3 uid="uid://b7pfpsbh6vddy"]
+
+[ext_resource type="Script" path="res://character.gd" id="1_rsuy1"]
+[ext_resource type="Texture2D" uid="uid://ck3dcam2k0ux4" path="res://sprite.png" id="2_aaoww"]
+[ext_resource type="Script" path="res://state_machine.gd" id="3_au87q"]
+[ext_resource type="Script" path="res://idle.gd" id="4_iojix"]
+[ext_resource type="Script" path="res://move.gd" id="5_s1k74"]
+[ext_resource type="Script" path="res://dodge.gd" id="6_8ni6c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7sqry"]
+size = Vector2(60, 36)
+
+[node name="Character" type="CharacterBody2D"]
+script = ExtResource("1_rsuy1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(4, -1)
+shape = SubResource("RectangleShape2D_7sqry")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(4, -0.999985)
+rotation = 1.5708
+scale = Vector2(0.134, 0.132)
+texture = ExtResource("2_aaoww")
+
+[node name="RollTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("3_au87q")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("4_iojix")
+
+[node name="Move" type="Node" parent="StateMachine"]
+script = ExtResource("5_s1k74")
+
+[node name="Dodge" type="Node" parent="StateMachine"]
+script = ExtResource("6_8ni6c")
+
+[connection signal="timeout" from="RollTimer" to="." method="_on_roll_timer_timeout"]
+[connection signal="timeout" from="RollTimer" to="StateMachine/Dodge" method="_on_roll_timer_timeout"]
+[connection signal="state_changed" from="StateMachine" to="." method="_on_state_machine_state_changed"]

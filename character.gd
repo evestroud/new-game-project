@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal state_changed(new_state: String)
+
 enum RelativeDirection {HOLDING_POSITION, ADVANCING, RETREATING, SIDESTEPPING_CW, SIDESTEPPING_CCW}
 
 @export var base_speed: int = 150
@@ -88,3 +90,7 @@ func _on_roll_timer_timeout() -> void:
 	transform.x = Transform2D.IDENTITY.x
 	transform.y = Transform2D.IDENTITY.y
 	look_at(get_global_mouse_position())
+
+
+func _on_state_machine_state_changed(new_state: String) -> void:
+	state_changed.emit(new_state)
