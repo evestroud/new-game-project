@@ -1,13 +1,14 @@
 [gd_scene load_steps=8 format=3 uid="uid://c7nspoq5a2g2f"]
 
 [ext_resource type="Script" path="res://character.gd" id="1_rymmr"]
-[ext_resource type="Texture2D" uid="uid://dvkeq00etpben" path="res://500_500_productGfx_ab749516be262c74b9acb30355eb664b.webp" id="2_ww3bx"]
+[ext_resource type="Texture2D" uid="uid://ck3dcam2k0ux4" path="res://sprite.png" id="2_vdwam"]
 [ext_resource type="Script" path="res://idle.gd" id="3_ko80s"]
 [ext_resource type="Script" path="res://state_machine.gd" id="3_q3hn8"]
 [ext_resource type="Script" path="res://move.gd" id="4_kg1fm"]
 [ext_resource type="Script" path="res://dodge.gd" id="5_oqag2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7sqry"]
+size = Vector2(60, 36)
 
 [node name="Node2D" type="Node2D"]
 
@@ -15,14 +16,14 @@
 script = ExtResource("1_rymmr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Character"]
-position = Vector2(1.5, 2)
+position = Vector2(4, -1)
 shape = SubResource("RectangleShape2D_7sqry")
 
 [node name="Sprite2D" type="Sprite2D" parent="Character"]
 position = Vector2(4, -0.999985)
 rotation = 1.5708
 scale = Vector2(0.134, 0.132)
-texture = ExtResource("2_ww3bx")
+texture = ExtResource("2_vdwam")
 
 [node name="RollTimer" type="Timer" parent="Character"]
 wait_time = 0.5
