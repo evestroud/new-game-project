@@ -8,7 +8,7 @@ extends Node
 signal finished(next_state_name: String)
 
 ## Reference to the Character this State is a part of.
-var character: CharacterBody2D
+var character: Character
 
 
 ## Sets up any local variables used by the State (timers, counters, etc.).
