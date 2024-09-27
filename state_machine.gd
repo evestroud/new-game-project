@@ -13,6 +13,8 @@ var state_map: Dictionary
 ## user input to the current state.
 var current_state: State
 
+@onready var character: CharacterBody2D = $".."
+
 ## Hard links to instantiated State nodes. Specific to a fixed implementation
 ## of Character States. This state machine can be abstracted by moving
 ## implementation specific details to a subclass.
@@ -26,6 +28,7 @@ var current_state: State
 ## connects their finished signal to _change_state.
 func _ready() -> void:
 	for child: State in get_children():
+		child.character = character
 		state_map[child.name] = child
 		var err: int = child.finished.connect(_change_state)
 		if err:

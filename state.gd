@@ -7,6 +7,9 @@ extends Node
 ## on all child nodes.
 signal finished(next_state_name: String)
 
+## Reference to the Character this State is a part of.
+var character: CharacterBody2D
+
 
 ## Sets up any local variables used by the State (timers, counters, etc.).
 ## Called by state_machine when changing to this State.

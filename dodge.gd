@@ -1,19 +1,85 @@
 extends State
 
-var timer: Timer = Timer.new()
+enum RelativeDirection {HOLDING_POSITION, ADVANCING, RETREATING, SIDESTEPPING_CW, SIDESTEPPING_CCW}
+
+@export var dodge_speed: int = 250
+@export var dodge_time: float = 0.5
+var rotation_speed: float = TAU / dodge_time
+var timer: Timer
+var relative_direction: RelativeDirection
 
 
 func enter() -> void:
-	timer.wait_time = 0.5
-	var err: int = timer.timeout.connect(func() -> void: finished.emit("Idle"))
+	var input_direction: Vector2 = Input.get_vector("Left", "Right", "Up", "Down")
+	relative_direction = get_relative_direction(input_direction.angle())
+	character.velocity = input_direction.normalized() * dodge_speed
+
+	timer = Timer.new()
+	timer.wait_time = dodge_time
+	timer.autostart = true
+	add_child(timer)
+	var err: int = timer.timeout.connect(_on_timer_timeout)
 	if err:
 		printerr(err)
-	else:
-		timer.autostart = true
+		# If timer fails to connect, need to exit state immediately
+		finished.emit("Idle")
 
 
-func _on_roll_timer_timeout() -> void:
+func exit() -> void:
+	remove_child(timer)
+
+
+func update(delta: float) -> void:
+	match relative_direction:
+		RelativeDirection.HOLDING_POSITION:
+			character.transform = (
+				character.transform.orthonormalized()
+				* Transform2D(
+					Vector2(cos(2 * TAU * timer.time_left), 0),
+					Vector2(0, cos(2 * TAU * timer.time_left)),
+					Transform2D.IDENTITY.origin
+				)
+			)
+		RelativeDirection.ADVANCING, RelativeDirection.RETREATING:
+			character.transform = (
+				character.transform.orthonormalized()
+				* Transform2D(
+					Vector2(cos(2 * TAU * timer.time_left), 0),
+					Transform2D.IDENTITY.y,
+					Transform2D.IDENTITY.origin
+				)
+			)
+		RelativeDirection.SIDESTEPPING_CCW:
+			character.rotate(rotation_speed * delta * -1)
+		RelativeDirection.SIDESTEPPING_CW:
+			character.rotate(rotation_speed * delta)
+	if character.move_and_slide():
+		# any collision logic will go here
+		pass
+
+
+func _on_timer_timeout() -> void:
+	character.transform.x = Transform2D.IDENTITY.x
+	character.transform.y = Transform2D.IDENTITY.y
+	character.look_at(character.get_global_mouse_position())
 	if Input.get_vector("Left", "Right", "Up", "Down"):
 		finished.emit("Move")
 	else:
 		finished.emit("Idle")
+
+
+func get_relative_direction(movement_angle: float) -> RelativeDirection:
+	if character.velocity.is_zero_approx():
+		return RelativeDirection.HOLDING_POSITION
+	var relative_movement_vector: Vector2 = Vector2.from_angle(character.rotation - movement_angle)
+	if abs(relative_movement_vector.x) > abs(relative_movement_vector.y):
+		return (
+			RelativeDirection.ADVANCING
+			if relative_movement_vector.x > 0
+			else RelativeDirection.RETREATING
+		)
+	return (
+		RelativeDirection.SIDESTEPPING_CW
+		if relative_movement_vector.y > 0
+		else RelativeDirection.SIDESTEPPING_CCW
+	)
