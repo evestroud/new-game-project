@@ -1,3 +1,4 @@
+class_name StateMachine
 extends Node
 ## State machine for managing character states. Inspired by:
 ## - https://www.gdquest.com/tutorial/godot/design-patterns/finite-state-machine/
@@ -13,7 +14,7 @@ var state_map: Dictionary
 ## user input to the current state.
 var current_state: State
 
-@onready var character: CharacterBody2D = $".."
+@onready var character: Character = $".."
 
 ## Hard links to instantiated State nodes. Specific to a fixed implementation
 ## of Character States. This state machine can be abstracted by moving
@@ -28,11 +29,7 @@ var current_state: State
 ## connects their finished signal to _change_state.
 func _ready() -> void:
 	for child: State in get_children():
-		child.character = character
 		state_map[child.name] = child
-		var err: int = child.finished.connect(_change_state)
-		if err:
-			printerr(err)
 	current_state = idle  ## Initial Character state is Idle.
 	state_changed.emit(current_state.name)
 
@@ -50,7 +47,7 @@ func _physics_process(delta: float) -> void:
 ## Cleans up the current state, switches current_state to the next state, then
 ## sets up the next state. This method is called by the listener for each
 ## State's finished signal.
-func _change_state(next_state: String) -> void:
+func change_state(next_state: String) -> void:
 	current_state.exit()
 	current_state = state_map[next_state]
 	current_state.enter()

@@ -34,5 +34,7 @@ script = ExtResource("5_s1k74")
 
 [node name="Dodge" type="Node" parent="StateMachine"]
 script = ExtResource("6_8ni6c")
+dodge_speed = null
+dodge_time = null
 
 [connection signal="state_changed" from="StateMachine" to="." method="_on_state_machine_state_changed"]

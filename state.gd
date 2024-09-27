@@ -2,13 +2,8 @@ class_name State
 extends Node
 ## Interface for states used by state_machine
 
-## Signals that this State is finished and which State to move to next.
-## state_machine automatically connects to this signal to _change_state
-## on all child nodes.
-signal finished(next_state_name: String)
-
 ## Reference to the Character this State is a part of.
-var character: Character
+@onready var state_machine: StateMachine = $".."
 
 
 ## Sets up any local variables used by the State (timers, counters, etc.).
