@@ -28,5 +28,5 @@ func update(_delta: float) -> void:
 ## Handles player input relevant to the state. finished should be emitted here
 ## if the State ends due to player input.
 ## Called by _unhandled_input in state_machine.
-func handle_input(_event: InputEvent) -> void:
+func handle_input(_input: String) -> void:
 	pass

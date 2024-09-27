@@ -5,7 +5,7 @@ extends State
 
 
 func update(_delta: float) -> void:
-	var input_direction: Vector2 = Input.get_vector("Left", "Right", "Up", "Down")
+	var input_direction: Vector2 = state_machine.character.controller.input_direction
 	if input_direction.is_zero_approx():
 		state_machine.change_state("Idle")
 
@@ -16,9 +16,10 @@ func update(_delta: float) -> void:
 	if state_machine.character.move_and_slide():
 		# any collision logic will go here
 		pass
-	state_machine.character.look_at(state_machine.character.get_global_mouse_position())
+	state_machine.character.look_at(state_machine.character.controller.target)
 
 
-func handle_input(event: InputEvent) -> void:
-	if event.is_action_pressed("Roll"):
+func handle_input(input: String) -> void:
+	print(input)
+	if input == "Roll":
 		state_machine.change_state("Dodge")

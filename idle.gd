@@ -6,11 +6,11 @@ func enter() -> void:
 
 
 func update(_delta: float) -> void:
-	if Input.get_vector("Left", "Right", "Up", "Down"):
+	if state_machine.character.controller.input_direction:
 		state_machine.change_state("Move")
-	state_machine.character.look_at(state_machine.character.get_global_mouse_position())
+	state_machine.character.look_at(state_machine.character.controller.target)
 
 
-func handle_input(event: InputEvent) -> void:
-	if event.is_action_pressed("Roll"):
+func handle_input(event: String) -> void:
+	if event == "Roll":
 		state_machine.change_state("Dodge")

@@ -34,9 +34,9 @@ func _ready() -> void:
 	state_changed.emit(current_state.name)
 
 
-## Pass inputs not already handled to the current state.
-func _unhandled_input(event: InputEvent) -> void:
-	current_state.handle_input(event)
+## Pass inputs to the current state.
+func _on_controller_input_received(input: String) -> void:
+	current_state.handle_input(input)
 
 
 ## Call the current State's update function each process step.

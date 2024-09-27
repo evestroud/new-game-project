@@ -10,7 +10,7 @@ var relative_direction: RelativeDirection
 
 
 func enter() -> void:
-	var input_direction: Vector2 = Input.get_vector("Left", "Right", "Up", "Down")
+	var input_direction: Vector2 = state_machine.character.controller.input_direction
 	relative_direction = get_relative_direction()
 	state_machine.character.velocity = input_direction.normalized() * dodge_speed
 
@@ -61,8 +61,8 @@ func update(delta: float) -> void:
 func _on_timer_timeout() -> void:
 	state_machine.character.transform.x = Transform2D.IDENTITY.x
 	state_machine.character.transform.y = Transform2D.IDENTITY.y
-	state_machine.character.look_at(state_machine.character.get_global_mouse_position())
-	if Input.get_vector("Left", "Right", "Up", "Down"):
+	state_machine.character.look_at(state_machine.character.controller.target)
+	if state_machine.character.controller.input_direction:
 		state_machine.change_state("Move")
 	else:
 		state_machine.change_state("Idle")

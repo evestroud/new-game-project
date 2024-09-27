@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b7pfpsbh6vddy"]
+[gd_scene load_steps=9 format=3 uid="uid://b7pfpsbh6vddy"]
 
 [ext_resource type="Script" path="res://character.gd" id="1_rsuy1"]
 [ext_resource type="Texture2D" uid="uid://ck3dcam2k0ux4" path="res://sprite.png" id="2_aaoww"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://idle.gd" id="4_iojix"]
 [ext_resource type="Script" path="res://move.gd" id="5_s1k74"]
 [ext_resource type="Script" path="res://dodge.gd" id="6_8ni6c"]
+[ext_resource type="Script" path="res://controller.gd" id="7_jumuu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7sqry"]
 size = Vector2(60, 36)
@@ -31,10 +32,16 @@ script = ExtResource("4_iojix")
 
 [node name="Move" type="Node" parent="StateMachine"]
 script = ExtResource("5_s1k74")
+base_speed = null
+run_modifier = null
 
 [node name="Dodge" type="Node" parent="StateMachine"]
 script = ExtResource("6_8ni6c")
 dodge_speed = null
 dodge_time = null
 
+[node name="Controller" type="Node" parent="."]
+script = ExtResource("7_jumuu")
+
 [connection signal="state_changed" from="StateMachine" to="." method="_on_state_machine_state_changed"]
+[connection signal="input_received" from="Controller" to="StateMachine" method="_on_controller_input_received"]
